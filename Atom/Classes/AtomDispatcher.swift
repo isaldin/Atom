@@ -14,14 +14,9 @@ class AtomDispatcher<EventType: AtomEvent, GlobalState: AtomElement where Global
             let next: GlobalState = GlobalState.react(current, event: event)
             GlobalState.instance = next
             if let printQueue = self?.printLogQueue {
-                dispatch_async(printQueue) { [weak self] in
-                    let serializedState = next.serialize()
-                    if let selfQueue = self?.queue {
-                        dispatch_async(selfQueue) {
-                            print(event)
-                            print(serializedState)
-                        }
-                    }
+                dispatch_async(printQueue) {
+                    print(event)
+                    print(next.serialize())
                 }
             }
             dispatch_async(dispatch_get_main_queue()) { [weak self] in
